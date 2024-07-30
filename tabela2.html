@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF do PjeCalc</title>
+    <script type="module" src="tabela2.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF do PjeCalc</h1>
+    <input type="file" id="file-input" accept="application/pdf">
+    <button id="copyButton">Copiar Tabela</button>
+
+    <pre id="output"></pre>
+</body>
+</html>
