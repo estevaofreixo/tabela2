@@ -219,10 +219,10 @@ function displayTotal() {
         table = document.createElement('table');
         table.id = 'resultsTable';
         table.border = '1';
-        //let header = table.createTHead();
-        //let headerRow = header.insertRow(0);
-        //headerRow.insertCell(0).innerText = "Descrição";
-        //headerRow.insertCell(1).innerText = "Valor";
+        let header = table.createTHead();
+        let headerRow = header.insertRow(0);
+        headerRow.insertCell(0).innerText = "";
+        headerRow.insertCell(1).innerText = "";
         document.body.appendChild(table);
     }
 
