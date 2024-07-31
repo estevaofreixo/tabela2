@@ -1,8 +1,8 @@
 
 
-import * as pdfjsLib from './pdf.mjs';
+import * as pdfjsLib from 'pdf.mjs';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.mjs';
 
 let pdfDoc = null;
 let occurrenceCount = {
