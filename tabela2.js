@@ -1,8 +1,8 @@
 
 
-import * as pdfjsLib from 'pdf.mjs';
+import * as pdfjsLib from './pdf.mjs';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.mjs';
 
 let pdfDoc = null;
 let occurrenceCount = {
@@ -214,22 +214,7 @@ function searchForESocialEvent() {
 }
 
 function displayTotal() {
-    let table = document.getElementById('resultsTable');
-    if (!table) {
-        table = document.createElement('table');
-        table.id = 'resultsTable';
-        table.border = '1';
-        let header = table.createTHead();
-        let headerRow = header.insertRow(0);
-        headerRow.insertCell(0).innerText = "Descrição";
-        headerRow.insertCell(1).innerText = "Valor";
-        document.body.appendChild(table);
-    }
-
-    // Remove todas as linhas da tabela, exceto o cabeçalho
-    while (table.rows.length > 1) {
-        table.deleteRow(1);
-    }
+    
 
     // Log dos valores da tabela e soma total
     console.log("Valores da Tabela:");
@@ -380,8 +365,8 @@ function addRowToTable(description, value) {
         table.border = '1';
         let header = table.createTHead();
         let headerRow = header.insertRow(0);
-        headerRow.insertCell(0).innerText = "Descrição";
-        headerRow.insertCell(1).innerText = "Valor";
+        //headerRow.insertCell(0).innerText = "Descrição";
+        //headerRow.insertCell(1).innerText = "Valor";
         document.body.appendChild(table);
     }
 
