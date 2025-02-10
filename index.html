@@ -1,25 +1,161 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF do PjeCalc</title>
-    <script type="module" src="tabela2.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        input[type="file"] {
-            margin-bottom: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insira sua tabela</title>
 </head>
+<link rel="stylesheet" href="tabelas.css">
 <body>
-    <h1>PDF do PjeCalc</h1>
-    <input type="file" id="file-input" accept="application/pdf">
-    <button id="copyButton">Copiar Tabela</button>
 
-    <pre id="output"></pre>
+    <div style="background-color: rgb(174, 213, 129); padding: 10px;">
+        <h1 style="float: left;">Insira abaixo sua tabela:</h1>
+        <button onclick="removerLinhasZero(); removerParagrafos(); verificarApagarParagrafo(); verificarApagarTRSemConteudo(); verificarApagarJuros();" class="btnTabela">Ajustar</button>
+        <button onclick="copiarConteudo()" class="btnTabela">Copiar</button>
+        <button onclick="semTexto()" class="btnTabela">Sem texto</button>
+        <button onclick="limpaTudo();" class="btnTabela">Limpar</button>
+                <div style="clear: both;"></div> <!-- Clearfix para evitar problemas de layout -->        
+    </div>
+
+    <div id="pasteArea" contenteditable="true"></div>
+
+    
+<script>
+
+function limpaTudo() {
+    var pasteArea = document.getElementById('pasteArea');
+    pasteArea.innerHTML = ''; // Limpa todo o conteúdo dentro da div
+}
+
+function removerLinhasZero() {
+    // Verifica se há <figure> com a classe "table"
+    var figuras = document.querySelectorAll('figure.table');
+    figuras.forEach(function(figura) {
+        // Verifica se há <table> com o estilo especificado
+        var tabelas = figura.querySelectorAll('table');
+        tabelas.forEach(function(tabela) {
+            // Verifica se há <tbody> dentro da tabela
+            var tbody = tabela.querySelector('tbody');
+            if (tbody) {
+                // Verifica se há <tr> dentro do tbody
+                var linhas = tbody.querySelectorAll('tr');
+                linhas.forEach(function(linha) {
+                    // Verifica se há <td> com conteúdo "R$ 0,00"
+                        var celulas = linha.querySelectorAll('td');
+                    celulas.forEach(function(celula) {
+                        if (celula.innerText.includes('R$\u00A00,00')) {
+                            linha.parentNode.removeChild(linha);
+                        }
+                    });
+                });
+            }
+        });
+    });
+}
+
+
+ // Função para remover parágrafos que contêm um <span> com conteúdo "0,00"
+function removerParagrafos() {
+     // Selecionar todos os parágrafos com a classe "MsoNormal"
+     var paragrafos = document.querySelectorAll('p.MsoNormal');
+
+// Iterar sobre todos os parágrafos
+paragrafos.forEach(function(paragrafo) {
+    // Verificar se há algum <span> com conteúdo "0,00" dentro do <p>
+    var spans = paragrafo.querySelectorAll('span');
+    var contemZero = false;
+    spans.forEach(function(span) {
+        if (span.innerText.trim() === '0,00') {
+            contemZero = true;
+        }
+    });
+
+    // Remover o parágrafo se contiver um <span> com conteúdo "0,00"
+    if (contemZero) {
+        paragrafo.parentNode.removeChild(paragrafo);
+    }
+});
+}
+
+function verificarApagarParagrafo() {
+    var spans = document.querySelectorAll("span");
+    for (var i = 0; i < spans.length; i++) {
+        if (spans[i].textContent === "0") {
+            var paragrafo = spans[i].parentNode;
+            if (paragrafo.tagName === "P") {
+                paragrafo.remove();
+            }
+        }
+    }
+}
+
+
+function verificarApagarTRSemConteudo() {                    
+    var tables = document.querySelectorAll("table");
+    tables.forEach(function(table) {
+        var rows = table.querySelectorAll("tr");
+        rows.forEach(function(row) {
+            var cells = row.querySelectorAll("td");
+            var hasEmptyCell = Array.from(cells).some(function(cell) {
+                return cell.textContent.trim() === "";
+            });
+            if (hasEmptyCell) {
+                row.remove();
+            }
+        });
+    });
+}
+
+
+function verificarApagarJuros() {                
+    var spans = document.querySelectorAll("span");
+    spans.forEach(function(span) {
+        if (span.textContent.includes("NOVA TAXA")) {
+            var paragrafo = span.closest("p");
+            var paragrafoAnterior = paragrafo.previousElementSibling;
+            if (paragrafoAnterior && paragrafoAnterior.tagName === "P" && paragrafoAnterior.textContent.includes("R$ 0,00")) {
+                paragrafoAnterior.remove();
+            }
+        }
+    });
+}
+
+/*
+function verificarApagarJuros() {                
+    var spans = document.querySelectorAll("span");
+    spans.forEach(function(span) {
+        if (span.textContent.includes("NOVA TAXA")) {
+            var paragrafo = span.closest("p");
+            var paragrafoAnterior = paragrafo.previousElementSibling;
+            if (paragrafoAnterior && paragrafoAnterior.tagName === "P" && paragrafoAnterior.textContent.trim() === "") {
+                paragrafoAnterior.remove();
+            }
+            paragrafo.remove();
+        }
+    });
+}
+
+*/
+
+function copiarConteudo() {
+    var pasteArea = document.getElementById('pasteArea');
+    pasteArea.focus();
+    document.execCommand('selectAll');
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges(); // Deselecionar o texto após a cópia    
+}
+
+function semTexto() {
+    var conteudo = document.getElementById('pasteArea');
+    var elementos = conteudo.childNodes;
+    for (var i = elementos.length - 1; i >= 0; i--) {
+        if (elementos[i].nodeName !== 'TD' && elementos[i].nodeName !== 'TABLE') {
+            conteudo.removeChild(elementos[i]);
+        }
+    }
+}
+</script>
+
 </body>
 </html>
+
